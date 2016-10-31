@@ -305,6 +305,20 @@ ksymtocode(struct lk_ctx *ctx, const char *s, int direction) {
 					return (p->uni ^ 0xf000);
 			}
 		}
+
+		/* not found in the current charset, maybe we'll have good luck in others? */
+		for (i = 0; i < charsets_size; i++) {
+			if (i == ctx->charset) {
+				continue;
+			}
+			p = (sym *) charsets[i].charnames;
+			if (p) {
+				for (j = charsets[i].start; j < 256; j++, p++) {
+					if (!strcmp(s, p->name))
+						return (p->uni ^ 0xf000);
+				}
+			}
+		}
 	} else /* if (!chosen_charset[0]) */ {
 		/* note: some keymaps use latin1 but with euro,
 		   so set_charset() would fail */
