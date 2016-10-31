@@ -152,22 +152,20 @@ codetoksym(int code) {
 		if (KTYP(code) > KT_LATIN)
 			return syms[KTYP(code)].table[KVAL(code)];
 
-		i = kmap_charset;
-		while (1) {
+		p = charsets[kmap_charset].charnames;
+		if (p) {
+			p += KVAL(code) - charsets[kmap_charset].start;
+			if (p->name[0])
+				return p->name;
+		}
+
+		for (i = 1; i < charsets_size; i++) {
 			p = charsets[i].charnames;
 			if (p) {
 				p += KVAL(code) - charsets[i].start;
-
 				if (p->name[0])
 					return p->name;
 			}
-
-			i++;
-
-			if (i == charsets_size)
-				i = 0;
-			if (i == kmap_charset)
-				break;
 		}
 	}
 
@@ -209,7 +207,9 @@ kt_latin(struct keymap *kmap, const char *s, int direction) {
 	if (kmap_charset) {
 		sym *p = charsets[kmap_charset].charnames;
 
-		for (i = charsets[kmap_charset].start; i < 256; i++, p++) {
+		max = (direction == TO_UNICODE ? 128 : 256);
+
+		for (i = charsets[kmap_charset].start; i < max; i++, p++) {
 			if(p->name[0] && !strcmp(s, p->name))
 				return K(KT_LATIN, i);
 		}
