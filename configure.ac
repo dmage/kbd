@@ -32,6 +32,7 @@ AM_SILENT_RULES([yes])
 # Checks for programs.
 AC_PROG_CC
 AM_PROG_CC_C_O
+AC_PROG_CC_C99
 AC_PROG_YACC
 AC_PROG_LEX
 AC_PROG_SED
@@ -109,6 +110,11 @@ AC_ARG_ENABLE(libkeymap,
 	[BUILD_LIBKEYMAP=$enableval],[BUILD_LIBKEYMAP=no])
 AM_CONDITIONAL(BUILD_LIBKEYMAP, test "$BUILD_LIBKEYMAP" = "yes")
 
+AC_ARG_ENABLE(libkfont,
+	AS_HELP_STRING(--enable-libkfont, [Build and install a libkfont]),
+	[BUILD_LIBKFONT=$enableval],[BUILD_LIBKFONT=no])
+AM_CONDITIONAL(BUILD_LIBKFONT, test "$BUILD_LIBKFONT" = "yes")
+
 AC_ARG_ENABLE(vlock,
 	AS_HELP_STRING(--disable-vlock, [do not build vlock]),
 	[VLOCK_PROG=no],[VLOCK_PROG=yes])
@@ -152,6 +158,7 @@ AC_CONFIG_FILES([Makefile
 		src/Makefile
 		src/libkbdfile/Makefile
 		src/libkeymap/Makefile
+		src/libkfont/Makefile
 		src/vlock/Makefile
 		tests/Makefile])
 AC_OUTPUT
@@ -174,4 +181,5 @@ AC_MSG_RESULT([
 	vlock:			${VLOCK_PROG}
 	libkbdfile:		${BUILD_LIBKEYMAP}
 	libkeymap:		${BUILD_LIBKEYMAP}
+	libkfont:		${BUILD_LIBKFONT}
 ])

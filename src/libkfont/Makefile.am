@@ -1,0 +1,35 @@
+AM_CPPFLAGS = \
+	-I$(srcdir) -I$(builddir) -I$(srcdir)/.. -I$(builddir)/.. \
+	-I$(srcdir)/../libkeymap -I$(builddir)/../libkeymap \
+	-DDATADIR=\"$(datadir)\" -DLOCALEDIR=\"$(localedir)\" \
+	-U_GNU_SOURCE -D_FORTIFY_SOURCE=2 \
+	-funit-at-a-time
+
+libkfont_la_SOURCES = \
+	kfont.c load.c psf.c combined.c legacy.c \
+	../xmalloc.c ../xmalloc.h \
+	../findfileP.c ../findfileP.h
+
+kfont_test_SOURCES = \
+	kfont-test.c \
+	../version.h
+
+kfont_dump_SOURCES = \
+	kfont-dump.c \
+	../version.h
+
+kfont_render_SOURCES = \
+	kfont-render.c \
+	../version.h
+
+kfont_test_LDADD = libkfont.la
+kfont_dump_LDADD = libkfont.la
+kfont_render_LDADD = libkfont.la
+noinst_PROGRAMS = kfont-test kfont-dump kfont-render
+
+if BUILD_LIBKFONT
+lib_LTLIBRARIES = libkfont.la
+libkfont_la_LDFLAGS = -export-symbols-regex ^kfont_.*
+else
+noinst_LTLIBRARIES = libkfont.la
+endif
