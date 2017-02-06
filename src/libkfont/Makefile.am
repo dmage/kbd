@@ -39,4 +39,5 @@ else
 noinst_LTLIBRARIES = libkfont.la
 endif
 
+AM_TESTS_ENVIRONMENT = cd ./test-data/; ./generate-fonts.sh; cd ..;
 TESTS = ./test-data/test.sh
