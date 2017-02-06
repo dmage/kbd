@@ -30,9 +30,10 @@ static enum kfont_error kfontP_parse_combined_content(struct kfont_slice *p, kfo
 		p->ptr++;
 
 		struct kfont_parse_options opts = {
+			.parse_legacy       = false,
 			.iunit              = 0,
 			.fonts_dirs         = partial_fonts_dirs, /* TODO(dmage): merge fonts_dirs and partial_fonts_dirs */
-			.partial_fonts_dirs = 0,
+			.partial_fonts_dirs = NULL,
 		};
 		kfont_handler_t out;
 		enum kfont_error err = kfont_load(name, opts, &out);

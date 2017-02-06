@@ -287,7 +287,7 @@ int lk_findfile(const char *fnam, const char *const *dirpath, const char *const 
 			dir = strdup(".");
 
 		if (dir == NULL)
-			return 1;
+			return 1; /* FIXME(dmage): bug! */
 
 		rc = findfile_in_dir(fnam, dir, recdepth, suffixes, fp);
 		free(dir);

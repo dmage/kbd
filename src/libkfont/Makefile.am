@@ -6,7 +6,7 @@ AM_CPPFLAGS = \
 	-funit-at-a-time
 
 libkfont_la_SOURCES = \
-	kfont.c load.c psf.c combined.c legacy.c \
+	kfont.c load.c psf.c combined.c legacy.c unimap.c \
 	../xmalloc.c ../xmalloc.h \
 	../findfileP.c ../findfileP.h
 
