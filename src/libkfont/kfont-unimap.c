@@ -30,6 +30,5 @@ int main(int argc, char *argv[])
 		printf("-> %u\n", unimap->font_pos);
 	}
 
-	// FIXME(dmage)
-	// kfont_free(font);
+	kfont_free_unimap(unimap);
 }

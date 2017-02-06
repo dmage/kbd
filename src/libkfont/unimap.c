@@ -215,3 +215,12 @@ enum kfont_error kfont_load_unimap(const char *filename, struct kfont_unimap_nod
 
 	return KFONT_ERROR_SUCCESS;
 }
+
+void kfont_free_unimap(struct kfont_unimap_node *unimap)
+{
+	while (unimap) {
+		struct kfont_unimap_node *next = unimap->next;
+		xfree(unimap);
+		unimap = next;
+	}
+}

@@ -84,12 +84,7 @@ enum kfont_error kfont_append(kfont_handler_t font, kfont_handler_t other)
 
 void kfont_free(kfont_handler_t font)
 {
-	struct kfont_unimap_node *unimap = font->unimap_head;
-	while (unimap) {
-		struct kfont_unimap_node *next = unimap->next;
-		xfree(unimap);
-		unimap = next;
-	}
+	kfont_free_unimap(font->unimap_head);
 	font->unimap_head = NULL;
 	font->unimap_tail = NULL;
 
