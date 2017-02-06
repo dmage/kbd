@@ -95,9 +95,11 @@ enum kfont_error kfont_parse(unsigned char *buf, size_t size, struct kfont_parse
 		}
 	}
 
-	err = kfontP_parse_legacy(&p, *font);
-	if (err != KFONT_ERROR_BAD_MAGIC) {
-		goto ret;
+	if (opts.parse_legacy) {
+		err = kfontP_parse_legacy(&p, *font, opts.iunit);
+		if (err != KFONT_ERROR_BAD_MAGIC) {
+			goto ret;
+		}
 	}
 
 ret:

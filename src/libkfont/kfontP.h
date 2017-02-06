@@ -62,6 +62,6 @@ enum kfont_error kfontP_parse_psf2(struct kfont_slice *p, kfont_handler_t font);
 enum kfont_error kfontP_parse_combined(struct kfont_slice *p, kfont_handler_t font,
                                        const char *const *partial_fonts_dirs);
 
-enum kfont_error kfontP_parse_legacy(struct kfont_slice *p, kfont_handler_t font);
+enum kfont_error kfontP_parse_legacy(struct kfont_slice *p, kfont_handler_t font, uint8_t iunit);
 
 #endif

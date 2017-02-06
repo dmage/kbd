@@ -16,6 +16,8 @@ const char *kfont_strerror(enum kfont_error err)
 			return "No error";
 		case KFONT_ERROR_READ:
 			return "Read error";
+		case KFONT_ERROR_BAD_MAGIC:
+			return "Unsupported font file";
 		case KFONT_ERROR_FONT_LENGTH_TOO_BIG:
 			return "Font length is too big";
 	}

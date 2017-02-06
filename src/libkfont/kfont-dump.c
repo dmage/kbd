@@ -37,7 +37,8 @@ int main(int argc, char *argv[])
 	const char *const fonts_dirs[]         = { "", 0 };
 	const char *const partial_fonts_dirs[] = { "", "../../data/partialfonts/", "./test-data/parts/", 0 };
 	struct kfont_parse_options opts        = {
-		.iunit              = 0,
+		.parse_legacy       = true,
+		.iunit              = 16,
 		.fonts_dirs         = fonts_dirs,
 		.partial_fonts_dirs = partial_fonts_dirs,
 	};

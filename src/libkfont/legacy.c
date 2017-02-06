@@ -4,21 +4,30 @@
 #include "kfont.h"
 #include "kfontP.h"
 
-enum kfont_error kfontP_parse_legacy(struct kfont_slice *p, kfont_handler_t font)
+enum kfont_error kfontP_parse_legacy(struct kfont_slice *p, kfont_handler_t font, uint8_t iunit)
 {
 	size_t len = p->end - p->ptr;
-	if (len == 9780) {
-		// 	case 8: offset = 7732;
-		// case 14: offset = 4142;
-		// case 16: offset = 40;
-
-		// TODO(dmage)
+	if (iunit != 0 && len == 9780) {
+		ptrdiff_t offset;
+		switch (iunit) {
+			case 8:
+				offset = 7732;
+				break;
+			case 14:
+				offset = 4142;
+				break;
+			case 16:
+				offset = 40;
+				break;
+			default:
+				return KFONT_ERROR_UNSUPPORTED_FONT_HEIGHT;
+		}
 
 		font->width      = 8;
 		font->height     = 16;
 		font->char_size  = 16;
 		font->char_count = 256;
-		font->glyphs     = p->ptr + 40;
+		font->glyphs     = p->ptr + offset;
 
 		return KFONT_ERROR_SUCCESS;
 	} else if (len == 32768) {
@@ -35,8 +44,6 @@ enum kfont_error kfontP_parse_legacy(struct kfont_slice *p, kfont_handler_t font
 		return KFONT_ERROR_SUCCESS;
 	} else if (len % 256 == 0 || len % 256 == 40) {
 		if (len % 256 == 40) {
-			// FIXME(dmage)
-			fprintf(stderr, "kfont_parse_legacy: +40\n");
 			p->ptr += 40;
 		}
 

@@ -30,6 +30,7 @@ enum kfont_error {
 	KFONT_ERROR_FONT_LENGTH_TOO_BIG      = -13,
 	KFONT_ERROR_FONT_METRICS_MISMATCH    = -14,
 	KFONT_ERROR_NOT_FOUND                = -15,
+	KFONT_ERROR_UNSUPPORTED_FONT_HEIGHT  = -18,
 };
 
 /**
@@ -41,6 +42,8 @@ const char *kfont_strerror(enum kfont_error err);
  * @brief Configuration options for the font parser.
  */
 struct kfont_parse_options {
+	bool parse_legacy;
+
 	/**
 	 * A desired font height for files with several point sizes.
 	 * Value 0 means to reject such fonts.
