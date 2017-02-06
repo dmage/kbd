@@ -188,7 +188,7 @@ enum kfont_error kfont_load_unimap(const char *filename, struct kfont_unimap_nod
 	char *p;
 	fpfile_t fp;
 
-	if (findfile(filename, unidirpath, unisuffixes, &fp) == 0) {
+	if (findfile(filename, unidirpath, unisuffixes, &fp) != 0) {
 		return errno;
 	}
 
@@ -209,7 +209,7 @@ enum kfont_error kfont_load_unimap(const char *filename, struct kfont_unimap_nod
 		parseline(buffer, filename, &head, &tail);
 	}
 
-	lk_fpclose(&fp);
+	fpclose(&fp);
 
 	*unimap = head;
 
