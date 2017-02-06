@@ -39,7 +39,7 @@ part() {
     u32le $HEIGHT # char size
     u32le $HEIGHT # height
     printf '\x08\x00\x00\x00' # width
-    dd if="$1" bs=9 skip="$2" count=$(($3 - $2)) 2>/dev/null
+    dd if="$1" bs=$HEIGHT skip="$2" count=$(($3 - $2)) 2>/dev/null
 }
 
 mkdir -p ./fonts

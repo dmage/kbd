@@ -37,7 +37,7 @@ static enum kfont_error kfontP_parse_combined_content(struct kfont_slice *p, kfo
 		kfont_handler_t out;
 		enum kfont_error err = kfont_load(name, opts, &out);
 		if (err != KFONT_ERROR_SUCCESS) {
-			fprintf(stderr, "kfont_parse_combined: kfont_load error %d\n", err);
+			fprintf(stderr, "kfont_parse_combined: kfont_load: %s\n", kfont_strerror(err));
 			// FIXME(dmage)
 			abort();
 		}
