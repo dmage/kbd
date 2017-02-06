@@ -1,44 +1,51 @@
 #!/bin/sh
 
 u8() {
-    perl -e 'print pack("C",$ARGV[0])' "$1"
+    local x
+    for x do
+        eval "printf '\\$(printf "%03o" $((x)))'"
+    done
 }
 
 u32le() {
-    perl -e 'print pack("L",$ARGV[0])' "$1"
+    local x=$1
+    for i in 1 2 3 4; do
+        u8 $((x & 0xff))
+        x=$((x >> 8))
+    done
 }
 
 BITMAP=./bitmap.raw
 HEIGHT=16
 
 psf1() {
-    printf '\x36\x04' # magic
-    printf '\x00' # mode
+    u8 0x36 0x04 # magic
+    u8 0x00 # mode
     u8 $HEIGHT # char size
     cat "$1"
 }
 
 psf2() {
-    printf '\x72\xb5\x4a\x86' # magic
-    printf '\x00\x00\x00\x00' # version
-    printf '\x20\x00\x00\x00' # header size
-    printf '\x00\x00\x00\x00' # flags
-    printf '\x00\x01\x00\x00' # length
+    u8 0x72 0xb5 0x4a 0x86 # magic
+    u32le 0 # version
+    u32le 0x20 # header size
+    u32le 0 # flags
+    u32le 256 # length
     u32le $HEIGHT # char size
     u32le $HEIGHT # height
-    printf '\x08\x00\x00\x00' # width
+    u32le 8 # width
     cat "$1"
 }
 
 part() {
-    printf '\x72\xb5\x4a\x86' # magic
-    printf '\x00\x00\x00\x00' # version
-    printf '\x20\x00\x00\x00' # header size
-    printf '\x00\x00\x00\x00' # flags
+    u8 0x72 0xb5 0x4a 0x86 # magic
+    u32le 0 # version
+    u32le 0x20 # header size
+    u32le 0 # flags
     u32le $(($3 - $2)) # length
     u32le $HEIGHT # char size
     u32le $HEIGHT # height
-    printf '\x08\x00\x00\x00' # width
+    u32le 8 # width
     dd if="$1" bs=$HEIGHT skip="$2" count=$(($3 - $2)) 2>/dev/null
 }
 

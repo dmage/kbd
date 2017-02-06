@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -e
 rc=0
 for f in ./test-data/fonts/*; do
 	rm -f ./tmpout.bmp
