@@ -204,13 +204,11 @@ enum kfont_error kfontP_parse_psf2(struct kfont_slice *p, kfont_handler_t font)
 
 	/* check that width, height and char_size are consistent */
 	if (psf2_header.width == 0) {
-		// FIXME(dmage): another error code
-		return KFONT_ERROR_CHAR_SIZE_ZERO;
+		return KFONT_ERROR_FONT_WIDTH_ZERO;
 	}
 	uint32_t pitch = (psf2_header.width - 1) / 8 + 1;
 	if (psf2_header.height != psf2_header.char_size / pitch) {
-		// FIXME(dmage): another error code
-		return KFONT_ERROR_CHAR_SIZE_TOO_BIG;
+		return KFONT_ERROR_PSF2_BAD_HEIGHT;
 	}
 
 	font->width      = psf2_header.width;

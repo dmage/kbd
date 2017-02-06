@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
 	};
 	enum kfont_error err = kfont_load(argv[1], opts, &font);
 	if (err != KFONT_ERROR_SUCCESS) {
-		fprintf(stderr, "kfont_load: %d\n", err);
+		fprintf(stderr, "kfont_load: %s\n", kfont_strerror(err));
 		exit(1);
 	}
 

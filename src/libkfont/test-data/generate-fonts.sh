@@ -1,5 +1,9 @@
 #!/bin/sh
 
+u8() {
+    perl -e 'print pack("C",$ARGV[0])' "$1"
+}
+
 u32le() {
     perl -e 'print pack("L",$ARGV[0])' "$1"
 }
@@ -10,7 +14,7 @@ HEIGHT=16
 psf1() {
     printf '\x36\x04' # magic
     printf '\x00' # mode
-    u32le $HEIGHT # char size
+    u8 $HEIGHT # char size
     cat "$1"
 }
 

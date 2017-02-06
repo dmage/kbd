@@ -1,8 +1,28 @@
+#include <stdio.h>
 #include <string.h>
 
 #include "kfont.h"
 #include "kfontP.h"
 #include "xmalloc.h"
+
+const char *kfont_strerror(enum kfont_error err)
+{
+	if (err > 0) {
+		return strerror(err);
+	}
+
+	switch (err) {
+		case KFONT_ERROR_SUCCESS:
+			return "No error";
+		case KFONT_ERROR_READ:
+			return "Read error";
+	}
+
+	// FIXME(dmage): it should be a reentrant function.
+	static char msg[50];
+	sprintf(msg, "Unknown error (%d)", (int)err);
+	return msg;
+}
 
 enum kfont_error kfont_append(kfont_handler_t font, kfont_handler_t other)
 {

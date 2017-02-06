@@ -33,3 +33,5 @@ libkfont_la_LDFLAGS = -export-symbols-regex ^kfont_.*
 else
 noinst_LTLIBRARIES = libkfont.la
 endif
+
+TESTS = ./test-data/test.sh
