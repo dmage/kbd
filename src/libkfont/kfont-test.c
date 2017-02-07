@@ -70,5 +70,8 @@ int main(int argc, char *argv[])
 		printf("-> %u\n", unimap->font_pos);
 	}
 
+	// FIXME(dmage): option?
+	kfont_save_unimap("./dump.uni", kfont_get_unicode_map(font));
+
 	kfont_free(font);
 }

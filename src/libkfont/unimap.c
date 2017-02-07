@@ -28,6 +28,26 @@ static void kfontP_unimap_append(struct kfont_unimap_node **head, struct kfont_u
 	}
 }
 
+static bool kfontP_unimap_is_sorted(struct kfont_unimap_node *unimap)
+{
+	if (!unimap) {
+		return true;
+	}
+
+	while (1) {
+		struct kfont_unimap_node *next = unimap->next;
+		if (!next) {
+			return true;
+		}
+
+		if (unimap->font_pos > next->font_pos) {
+			return false;
+		}
+
+		unimap = next;
+	}
+}
+
 /*
  * Skip spaces and read U+1234 or return -1 for error.
  * Return first non-read position in *p0 (unchanged on error).
@@ -214,6 +234,91 @@ enum kfont_error kfont_load_unimap(const char *filename, struct kfont_unimap_nod
 	*unimap = head;
 
 	return KFONT_ERROR_SUCCESS;
+}
+
+static enum kfont_error kfontP_unimap_write_unsorted(FILE *f, struct kfont_unimap_node *unimap)
+{
+	// FIXME(dmage): current assumption: unimap->len == 1 for all elements.
+
+	while (unimap) {
+		/* <font_pos> <uc> */
+		fprintf(f, "0x%02X\tU+%04X\n", unimap->font_pos, unimap->seq[0]);
+		unimap = unimap->next;
+	}
+	return KFONT_ERROR_SUCCESS;
+}
+
+static enum kfont_error kfontP_unimap_write_sorted(FILE *f, struct kfont_unimap_node *unimap)
+{
+	// FIXME(dmage): current assumption: unimap->len == 1 for all elements.
+
+	while (unimap) {
+		if (unimap->next && unimap->next->font_pos == unimap->font_pos + 1 &&
+			unimap->next->seq[0] == unimap->seq[0]) {
+			/* <range> <uc> */
+			uint32_t font_pos = unimap->font_pos;
+			uint32_t uc = unimap->seq[0];
+			uint32_t len = 2;
+			unimap = unimap->next;
+			while (unimap->next && unimap->next->font_pos == unimap->font_pos + 1 &&
+				unimap->next->seq[0] == uc) {
+				len++;
+				unimap = unimap->next;
+			}
+			unimap = unimap->next;
+			fprintf(f, "0x%02X-0x%02X\tU+%04X\n", font_pos, font_pos+len-1, uc);
+		}
+		if (unimap->next && unimap->next->font_pos == unimap->font_pos + 1 &&
+			unimap->next->seq[0] == unimap->seq[0] + 1) {
+			/* <range> (idem | <unicode range>) */
+			uint32_t font_pos = unimap->font_pos;
+			uint32_t uc = unimap->seq[0];
+			uint32_t len = 2;
+			unimap = unimap->next;
+			while (unimap->next && unimap->next->font_pos == unimap->font_pos + 1 &&
+				unimap->next->seq[0] == unimap->seq[0] + 1) {
+				len++;
+				unimap = unimap->next;
+			}
+			unimap = unimap->next;
+			if (font_pos == uc) {
+				fprintf(f, "0x%02X-0x%02X\tidem\n", font_pos, font_pos+len-1);
+			} else {
+				fprintf(f, "0x%02X-0x%02X\tU+%04X-U+%04X\n", font_pos, font_pos+len-1, uc, uc+len-1);
+			}
+		} else {
+			/* <font_pos> <uc> [<uc> ...] */
+			fprintf(f, "0x%02X\tU+%04X", unimap->font_pos, unimap->seq[0]);
+			uint32_t font_pos = unimap->font_pos;
+			unimap = unimap->next;
+			while (unimap && unimap->font_pos == font_pos) {
+				fprintf(f, " U+%04X", unimap->seq[0]);
+				unimap = unimap->next;
+			}
+			fprintf(f, "\n");
+		}
+	}
+
+	return KFONT_ERROR_SUCCESS;
+}
+
+enum kfont_error kfont_save_unimap(const char *filename, struct kfont_unimap_node *unimap)
+{
+	FILE *f = fopen(filename, "w");
+	if (!f) {
+		return errno;
+	}
+
+	enum kfont_error err;
+	if (kfontP_unimap_is_sorted(unimap)) {
+		err = kfontP_unimap_write_sorted(f, unimap);
+	} else {
+		err = kfontP_unimap_write_unsorted(f, unimap);
+	}
+
+	fclose(f);
+
+	return err;
 }
 
 void kfont_free_unimap(struct kfont_unimap_node *unimap)

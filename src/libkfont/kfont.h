@@ -164,6 +164,11 @@ struct kfont_unimap_node *kfont_get_unicode_map(kfont_handler_t font);
 enum kfont_error kfont_load_unimap(const char *filename, struct kfont_unimap_node **unimap);
 
 /**
+ * FIXME(dmage)
+ */
+enum kfont_error kfont_save_unimap(const char *filename, struct kfont_unimap_node *unimap);
+
+/**
  * @brief Releases resources associated with the unicode map.
  */
 void kfont_free_unimap(struct kfont_unimap_node *unimap);
