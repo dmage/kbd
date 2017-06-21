@@ -26,11 +26,16 @@ kfont_unimap_SOURCES = \
 	kfont-unimap.c \
 	../version.h
 
+kfont_setfont_SOURCES = \
+	kfont-setfont.c \
+	../version.h
+
 kfont_test_LDADD = libkfont.la
 kfont_dump_LDADD = libkfont.la
 kfont_render_LDADD = libkfont.la
 kfont_unimap_LDADD = libkfont.la
-noinst_PROGRAMS = kfont-test kfont-dump kfont-render kfont-unimap
+kfont_setfont_LDADD = libkfont.la
+noinst_PROGRAMS = kfont-test kfont-dump kfont-render kfont-unimap kfont-setfont
 
 if BUILD_LIBKFONT
 lib_LTLIBRARIES = libkfont.la
