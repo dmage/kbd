@@ -53,5 +53,14 @@ int main(int argc, char *argv[]) {
         exit(1);
     }
 
+    struct unimapinit advice;
+    advice.advised_hashsize = 0;
+    advice.advised_hashstep = 0;
+    advice.advised_hashlevel = 0;
+    if (ioctl(fd, PIO_UNIMAPCLR, &advice) != 0) {
+        perror("ioctl: PIO_UNIMAPCLR");
+        exit(1);
+    }
+
     free(buf);
 }
