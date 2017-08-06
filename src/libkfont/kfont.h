@@ -1,6 +1,6 @@
 /**
  * @file kfont.h
- * @brief This file is a part of libkfont's public API.
+ * @brief This file describes libkfont's public API.
  */
 #ifndef KFONT_H
 #define KFONT_H
@@ -46,7 +46,7 @@ struct kfont_parse_options {
 
 	/**
 	 * A desired font height for files with several point sizes.
-	 * Value 0 means to reject such fonts.
+	 * Value 0 means such fonts should be rejected.
 	 */
 	uint8_t iunit;
 
@@ -63,40 +63,40 @@ struct kfont_parse_options {
 typedef struct kfont_handler *kfont_handler_t;
 
 /**
- * @brief Loads a font from the given file.
- * If the font is loaded, it should be freed using @ref kfont_free.
+ * @brief Reads and parses a font from a file specified by name.
+ * If the font is successfully loaded, it should be freed with @ref kfont_free.
  */
 enum kfont_error kfont_load(const char *filename, struct kfont_parse_options opts, kfont_handler_t *font);
 
 /**
- * @brief Loads a font from the given buffer.
- * If the font is loaded, it should be freed using @ref kfont_free.
- * The buffer itself should not be freed before freeing the font.
+ * @brief Parses a font from a buffer.
+ * If the font is successfully loaded, it should be freed with @ref kfont_free.
+ * The buffer should not be freed until the font is freed.
  */
 enum kfont_error kfont_parse(unsigned char *buf, size_t size, struct kfont_parse_options opts, kfont_handler_t *font);
 
 /**
- * @brief Combines two fonts. Resources associated with the font @p other would be released.
+ * @brief Combines two fonts. Resources associated with the font @p other will be released.
  */
 enum kfont_error kfont_append(kfont_handler_t font, kfont_handler_t other);
 
 /**
- * @brief Releases resources associated with the font.
+ * @brief Releases resources associated with a font.
  */
 void kfont_free(kfont_handler_t font);
 
 /**
- * @brief Returns the characters' width.
+ * @brief Returns the width of a font's characters.
  */
 uint32_t kfont_get_width(kfont_handler_t font);
 
 /**
- * @brief Returns the characters' height.
+ * @brief Returns the height of a font's characters.
  */
 uint32_t kfont_get_height(kfont_handler_t font);
 
 /**
- * @brief Returns the number of characters in the font.
+ * @brief Returns the number of characters in a font.
  */
 uint32_t kfont_get_char_count(kfont_handler_t font);
 
@@ -104,24 +104,25 @@ uint32_t kfont_get_char_count(kfont_handler_t font);
  * @brief Returns a buffer with a symbol representation. It should not be freed.
  *
  * @code
- *  01234v67
- * 0-####---
- * >##--#x--
- * 2----##--
- * 3---##---
- * 4--##----
- * 5--------
- * 6--##----
- * 7--------
+ * // buf:
+ * //      0  1  2[ 3] 4  5  6  7
+ * //   0 -- ## ## ## ## ## -- --
+ * // [ 1]## ## --[--]-- ## ## --
+ * //   2 -- -- -- -- ## ## -- --
+ * //   3 -- -- -- ## ## -- -- --
+ * //   4 -- -- -- ## ## -- -- --
+ * //   5 -- -- -- -- -- -- -- --
+ * //   6 -- -- -- ## ## -- -- --
+ * //   7 -- -- -- -- -- -- -- --
  *
+ * width = 8
  * row = 1
- * col = 5
+ * col = 3
  *
- * pitch = ceil(width/8)
- * byte_idx = row*pitch + floor(col/8)
- * bit_idx = col%8
+ * byte_idx = row*ceil(width/8) + floor(col/8)
+ * bit_idx = col % 8
  *
- * x = (buf[byte_idx] & (0x80 >> bit_idx))
+ * selected_bit = (buf[byte_idx] & (0x80 >> bit_idx))
  * @endcode
  */
 const unsigned char *kfont_get_char_buffer(kfont_handler_t font, uint32_t font_pos);
@@ -141,25 +142,26 @@ struct kfont_unimap_node {
 	uint32_t font_pos;
 
 	/**
-	 * A length of the @ref seq.
+	 * A length of @ref seq.
 	 */
 	unsigned int len;
 
 	/**
-	 * A sequence of the Unicode characters represented by the font position @ref font_pos.
+	 * A sequence of Unicode characters which is represented by the glyph at
+	 * the font position @ref font_pos.
 	 */
 	uint32_t seq[];
 };
 
 /**
- * @brief Returns a Unicode description of the glyphs.
+ * @brief Returns a Unicode description of a font's glyphs.
  * The result is associated with the font and should not be freed.
  */
 struct kfont_unimap_node *kfont_get_unicode_map(kfont_handler_t font);
 
 /**
- * @brief Loads a unicode map from the given file.
- * If the unicode map is loaded, it should be freed using @ref kfont_free_unimap.
+ * @brief Loads a unicode map from a file specified by name.
+ * If the unicode map is successfully loaded, it should be freed with @ref kfont_free_unimap.
  */
 enum kfont_error kfont_load_unimap(const char *filename, struct kfont_unimap_node **unimap);
 

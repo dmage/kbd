@@ -5,37 +5,40 @@ AM_CPPFLAGS = \
 	-U_GNU_SOURCE -D_FORTIFY_SOURCE=2 \
 	-funit-at-a-time
 
+
 libkfont_la_SOURCES = \
-	kfont.c load.c psf.c combined.c legacy.c unimap.c \
+	error.c \
+	font-combined.c font-getters.c font-legacy.c font-load.c font-psf.c \
+	unimap.c \
 	../xmalloc.c ../xmalloc.h \
 	../findfileP.c ../findfileP.h
 
-kfont_test_SOURCES = \
-	kfont-test.c \
+kfont_font_inspect_SOURCES = \
+	tools/kfont-font-inspect.c \
 	../version.h
 
-kfont_dump_SOURCES = \
-	kfont-dump.c \
+kfont_font_render_glyphs_SOURCES = \
+	tools/kfont-font-render-glyphs.c \
 	../version.h
 
-kfont_render_SOURCES = \
-	kfont-render.c \
+kfont_font_render_text_SOURCES = \
+	tools/kfont-font-render-text.c \
 	../version.h
 
 kfont_unimap_SOURCES = \
-	kfont-unimap.c \
+	tools/kfont-unimap.c \
 	../version.h
 
 kfont_setfont_SOURCES = \
-	kfont-setfont.c \
+	tools/kfont-setfont.c \
 	../version.h
 
-kfont_test_LDADD = libkfont.la
-kfont_dump_LDADD = libkfont.la
-kfont_render_LDADD = libkfont.la
+kfont_font_inspect_LDADD = libkfont.la
+kfont_font_render_glyphs_LDADD = libkfont.la
+kfont_font_render_text_LDADD = libkfont.la
 kfont_unimap_LDADD = libkfont.la
 kfont_setfont_LDADD = libkfont.la
-noinst_PROGRAMS = kfont-test kfont-dump kfont-render kfont-unimap kfont-setfont
+noinst_PROGRAMS = kfont-font-inspect kfont-font-render-glyphs kfont-font-render-text kfont-unimap kfont-setfont
 
 if BUILD_LIBKFONT
 lib_LTLIBRARIES = libkfont.la

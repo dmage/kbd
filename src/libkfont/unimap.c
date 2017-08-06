@@ -52,9 +52,9 @@ static bool kfontP_unimap_is_sorted(struct kfont_unimap_node *unimap)
  * Skip spaces and read U+1234 or return -1 for error.
  * Return first non-read position in *p0 (unchanged on error).
  */
-static int getunicode(char **p0)
+static int getunicode(const char **p0)
 {
-	char *p = *p0;
+	const char *p = *p0;
 
 	while (*p == ' ' || *p == '\t')
 		p++;
@@ -95,12 +95,13 @@ static int getunicode(char **p0)
  * and <h> ::= <hexadecimal digit>
  */
 
-static void parseline(char *buffer, char *tblname, struct kfont_unimap_node **head, struct kfont_unimap_node **tail)
+static void parseline(const char *buffer, const char *tblname, struct kfont_unimap_node **head, struct kfont_unimap_node **tail)
 {
 	int fontlen = 512;
 	int i;
 	int fp0, fp1, un0, un1;
-	char *p, *p1;
+	const char *p;
+    char *p1;
 
 	p = buffer;
 
@@ -216,7 +217,7 @@ enum kfont_error kfont_load_unimap(const char *filename, struct kfont_unimap_nod
 	// if (verbose)
 	// 	printf(_("Loading unicode map from file %s\n"), fp.pathname);
 
-	struct kfont_unimap_node *head, *tail;
+	struct kfont_unimap_node *head = NULL, *tail = NULL;
 
 	while (fgets(buffer, sizeof(buffer), fp.fd) != NULL) {
 		if ((p = strchr(buffer, '\n')) != NULL)

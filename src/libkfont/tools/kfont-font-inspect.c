@@ -3,14 +3,21 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #include "version.h"
 #include "kfont.h"
 
+int use_color;
+
 static void draw_bit(int bit)
 {
 	if (bit) {
-		printf("\x1b[7m  \x1b[0m");
+        if (use_color) {
+		    printf("\x1b[7m  \x1b[0m");
+        } else {
+		    printf("[]");
+        }
 	} else {
 		printf("  ");
 	}
@@ -24,6 +31,8 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "usage: %s FILENAME.psf\n", progname);
 		exit(1);
 	}
+
+    use_color = isatty(STDOUT_FILENO);
 
 	kfont_handler_t font;
 	const char *const fonts_dirs[]         = { "", 0 };

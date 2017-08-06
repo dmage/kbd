@@ -108,3 +108,71 @@ ret:
 	}
 	return err;
 }
+
+enum kfont_error kfont_append(kfont_handler_t font, kfont_handler_t other)
+{
+	if (font->width != other->width || font->height != other->height || font->char_size != other->char_size) {
+		return KFONT_ERROR_FONT_METRICS_MISMATCH;
+	}
+
+	if (font->char_count > UINT32_MAX - other->char_count) {
+		return KFONT_ERROR_FONT_LENGTH_TOO_BIG;
+	}
+	uint32_t char_count   = font->char_count + other->char_count;
+	uint32_t other_offset = font->char_count;
+
+	if (char_count > SIZE_MAX / font->char_size) {
+		return KFONT_ERROR_FONT_LENGTH_TOO_BIG;
+	}
+	unsigned char *glyphs = xmalloc(font->char_size * char_count);
+
+	memmove(glyphs,
+	        font->glyphs,
+	        font->char_size * font->char_count);
+	memmove(glyphs + font->char_size * font->char_count,
+	        other->glyphs,
+	        font->char_size * other->char_count);
+
+	font->char_count = char_count;
+	font->glyphs     = glyphs;
+
+	if (font->blob) {
+		xfree(font->blob);
+	}
+	font->blob = glyphs;
+
+	if (font->unimap_tail) {
+		font->unimap_tail->next = other->unimap_head;
+		font->unimap_tail       = other->unimap_tail;
+	} else {
+		font->unimap_head = other->unimap_head;
+		font->unimap_tail = other->unimap_tail;
+	}
+
+	struct kfont_unimap_node *unimap = other->unimap_head;
+	while (unimap) {
+		unimap->font_pos += other_offset;
+		unimap = unimap->next;
+	}
+
+	other->unimap_head = NULL;
+	other->unimap_tail = NULL;
+
+	kfont_free(other);
+
+	return KFONT_ERROR_SUCCESS;
+}
+
+void kfont_free(kfont_handler_t font)
+{
+	kfont_free_unimap(font->unimap_head);
+	font->unimap_head = NULL;
+	font->unimap_tail = NULL;
+
+	if (font->blob) {
+		xfree(font->blob);
+		font->blob = NULL;
+	}
+
+	xfree(font);
+}
