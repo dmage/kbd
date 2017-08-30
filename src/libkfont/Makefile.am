@@ -1,6 +1,6 @@
 AM_CPPFLAGS = \
 	-I$(srcdir) -I$(builddir) -I$(srcdir)/.. -I$(builddir)/.. \
-	-I$(srcdir)/../libkeymap -I$(builddir)/../libkeymap \
+	-I$(srcdir)/../libkbdfile \
 	-DDATADIR=\"$(datadir)\" -DLOCALEDIR=\"$(localedir)\" \
 	-U_GNU_SOURCE -D_FORTIFY_SOURCE=2 \
 	-funit-at-a-time
@@ -10,8 +10,9 @@ libkfont_la_SOURCES = \
 	error.c \
 	font-combined.c font-getters.c font-legacy.c font-load.c font-psf.c \
 	unimap.c \
-	../xmalloc.c ../xmalloc.h \
-	../findfileP.c ../findfileP.h
+	../xmalloc.c ../xmalloc.h
+
+libkfont_la_LIBADD = $(builddir)/../libkbdfile/libkbdfile.la
 
 kfont_font_inspect_SOURCES = \
 	tools/kfont-font-inspect.c \

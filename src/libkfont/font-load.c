@@ -1,6 +1,7 @@
 #include <stdio.h>
 
-#include "findfileP.h"
+#include <keymap/findfile.h>
+
 #include "kfont.h"
 #include "kfontP.h"
 #include "xmalloc.h"
@@ -41,19 +42,19 @@ static bool kfontP_blob_read(FILE *f, unsigned char **buffer, size_t *size)
 enum kfont_error kfont_load(const char *filename, struct kfont_parse_options opts, kfont_handler_t *font)
 {
 	const char *const suffixes[] = { "", ".psfu", ".psf", ".cp", ".fnt", 0 };
-	fpfile_t fp;
-	if (findfile(filename, opts.fonts_dirs, suffixes, &fp) != 0) {
+	lkfile_t fp;
+	if (lk_findfile(filename, opts.fonts_dirs, suffixes, &fp) != 0) {
 		return KFONT_ERROR_NOT_FOUND;
 	}
 
 	unsigned char *buf;
 	size_t size;
 	if (!kfontP_blob_read(fp.fd, &buf, &size)) {
-		fpclose(&fp);
+		lk_fpclose(&fp);
 		return KFONT_ERROR_READ;
 	}
 
-	fpclose(&fp);
+	lk_fpclose(&fp);
 
 	enum kfont_error err = kfont_parse(buf, size, opts, font);
 	if (err != KFONT_ERROR_SUCCESS) {

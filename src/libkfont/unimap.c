@@ -3,7 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "findfileP.h"
+#include <keymap/findfile.h>
+
 #include "kfont.h"
 #include "kfontP.h"
 #include "xmalloc.h"
@@ -207,9 +208,9 @@ enum kfont_error kfont_load_unimap(const char *filename, struct kfont_unimap_nod
 {
 	char buffer[65536];
 	char *p;
-	fpfile_t fp;
+    lkfile_t fp;
 
-	if (findfile(filename, unidirpath, unisuffixes, &fp) != 0) {
+	if (lk_findfile(filename, unidirpath, unisuffixes, &fp) != 0) {
 		return errno;
 	}
 
@@ -230,7 +231,7 @@ enum kfont_error kfont_load_unimap(const char *filename, struct kfont_unimap_nod
 		parseline(buffer, filename, &head, &tail);
 	}
 
-	fpclose(&fp);
+	lk_fpclose(&fp);
 
 	*unimap = head;
 
@@ -317,7 +318,7 @@ enum kfont_error kfont_save_unimap(const char *filename, struct kfont_unimap_nod
 		err = kfontP_unimap_write_unsorted(f, unimap);
 	}
 
-	fclose(f);
+    fclose(f);
 
 	return err;
 }
