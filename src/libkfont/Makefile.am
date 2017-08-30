@@ -25,8 +25,8 @@ kfont_font_render_text_SOURCES = \
 	tools/kfont-font-render-text.c \
 	../version.h
 
-kfont_unimap_SOURCES = \
-	tools/kfont-unimap.c \
+kfont_unimap_inspect_SOURCES = \
+	tools/kfont-unimap-inspect.c \
 	../version.h
 
 kfont_setfont_SOURCES = \
@@ -36,9 +36,9 @@ kfont_setfont_SOURCES = \
 kfont_font_inspect_LDADD = libkfont.la
 kfont_font_render_glyphs_LDADD = libkfont.la
 kfont_font_render_text_LDADD = libkfont.la
-kfont_unimap_LDADD = libkfont.la
+kfont_unimap_inspect_LDADD = libkfont.la
 kfont_setfont_LDADD = libkfont.la
-noinst_PROGRAMS = kfont-font-inspect kfont-font-render-glyphs kfont-font-render-text kfont-unimap kfont-setfont
+noinst_PROGRAMS = kfont-font-inspect kfont-font-render-glyphs kfont-font-render-text kfont-unimap-inspect kfont-setfont
 
 if BUILD_LIBKFONT
 lib_LTLIBRARIES = libkfont.la
