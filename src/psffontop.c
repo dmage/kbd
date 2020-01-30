@@ -61,12 +61,12 @@ assemble_int(unsigned char *ip)
 }
 
 static void
-store_int_le(unsigned char *ip, int num)
+store_uint32_le(unsigned char *ip, unsigned int num)
 {
-	ip[0] = (num & 0xff);
-	ip[1] = ((num >> 8) & 0xff);
-	ip[2] = ((num >> 16) & 0xff);
-	ip[3] = ((num >> 24) & 0xff);
+	ip[0] = (unsigned char)(num & 0xff);
+	ip[1] = (unsigned char)((num >> 8) & 0xff);
+	ip[2] = (unsigned char)((num >> 16) & 0xff);
+	ip[3] = (unsigned char)((num >> 24) & 0xff);
 }
 
 static unsigned int
@@ -411,17 +411,34 @@ void appendseparator(FILE *fp, int seq, int utf8)
 void writepsffontheader(FILE *ofil, int width, int height, int fontlen,
                         int *psftype, int flags)
 {
-	int bytewidth, charsize, ret;
+	unsigned char bytewidth, charsize;
+	size_t ret;
 
-	bytewidth = (width + 7) / 8;
-	charsize  = bytewidth * height;
+	/*
+	 * There are limits on width and height that are supported:
+	 *
+	 *   1 <= width <= 32
+	 *   1 <= height <= 32
+	 *
+	 * The number of bytes that are needed to store one row of bits (width
+	 * bits) is
+	 *
+	 *   bytewidth = ceil(width / 8),   1 <= bytewidth <= 4.
+	 *
+	 * The number of bytes that are needed to store the entire glyph is
+	 *
+	 *   charsize = bytewidth * height,   1 <= charsize <= 128.
+	 */
+
+	bytewidth = (unsigned char /* FIXME */)((width + 7) / 8);
+	charsize  = (unsigned char /* FIXME */)(bytewidth * height);
 
 	if ((fontlen != 256 && fontlen != 512) || width != 8)
 		*psftype = 2;
 
 	if (*psftype == 2) {
 		struct psf2_header h;
-		int flags2 = 0;
+		unsigned int flags2 = 0;
 
 		if (flags & WPSFH_HASTAB)
 			flags2 |= PSF2_HAS_UNICODE_TABLE;
@@ -429,13 +446,13 @@ void writepsffontheader(FILE *ofil, int width, int height, int fontlen,
 		h.magic[1] = PSF2_MAGIC1;
 		h.magic[2] = PSF2_MAGIC2;
 		h.magic[3] = PSF2_MAGIC3;
-		store_int_le((unsigned char *)&h.version, 0);
-		store_int_le((unsigned char *)&h.headersize, sizeof(h));
-		store_int_le((unsigned char *)&h.flags, flags2);
-		store_int_le((unsigned char *)&h.length, fontlen);
-		store_int_le((unsigned char *)&h.charsize, charsize);
-		store_int_le((unsigned char *)&h.width, width);
-		store_int_le((unsigned char *)&h.height, height);
+		store_uint32_le((unsigned char *)&h.version, 0);
+		store_uint32_le((unsigned char *)&h.headersize, sizeof(h));
+		store_uint32_le((unsigned char *)&h.flags, flags2);
+		store_uint32_le((unsigned char *)&h.length, (unsigned int /* FIXME */)fontlen);
+		store_uint32_le((unsigned char *)&h.charsize, charsize);
+		store_uint32_le((unsigned char *)&h.width, (unsigned int /* FIXME */)width);
+		store_uint32_le((unsigned char *)&h.height, (unsigned int /* FIXME */)height);
 		ret = fwrite(&h, sizeof(h), 1, ofil);
 	} else {
 		struct psf1_header h;
