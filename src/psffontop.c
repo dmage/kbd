@@ -54,7 +54,10 @@ addseq(struct unicode_list *up, unsigned int uc)
 static unsigned int
 assemble_int(unsigned char *ip)
 {
-	return (ip[0] + (ip[1] << 8) + (ip[2] << 16) + (ip[3] << 24));
+	return (unsigned int)ip[0] +
+	       ((unsigned int)ip[1] << 8) +
+	       ((unsigned int)ip[2] << 16) +
+	       ((unsigned int)ip[3] << 24);
 }
 
 static void
