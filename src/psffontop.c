@@ -476,11 +476,11 @@ void writepsffontheader(FILE *ofil, int width, int height, int fontlen,
 	}
 }
 
-int writepsffont(FILE *ofil, char *fontbuf, int width, int height, size_t fontlen,
+int writepsffont(FILE *ofil, unsigned char *fontbuf, int width, int height, int fontlen,
                  int psftype, struct unicode_list *uclistheads)
 {
 	int bytewidth, charsize, flags, utf8;
-	size_t i;
+	int i;
 
 	bytewidth = (width + 7) / 8;
 	charsize  = bytewidth * height;
@@ -495,7 +495,7 @@ int writepsffont(FILE *ofil, char *fontbuf, int width, int height, size_t fontle
 	writepsffontheader(ofil, width, height, fontlen, &psftype, flags);
 	utf8 = (psftype == 2);
 
-	if ((fwrite(fontbuf, charsize, fontlen, ofil)) != fontlen) {
+	if ((fwrite(fontbuf, (size_t /* FIXME */)charsize, (size_t /* FIXME */)fontlen, ofil)) != (size_t /* FIXME */)fontlen) {
 		fprintf(stderr, _("Cannot write font file"));
 		exit(EX_IOERR);
 	}

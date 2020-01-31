@@ -421,7 +421,7 @@ int main(int argc, char **argv)
 	}
 
 	if (ofil) {
-		writepsffont(ofil, (char * /* FIXME */)fontbuf, width, height, fontlen, psftype,
+		writepsffont(ofil, fontbuf, width, height, fontlen, psftype,
 		             notable ? NULL : uclistheads);
 		fclose(ofil);
 	}
