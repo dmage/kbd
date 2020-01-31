@@ -188,12 +188,12 @@ get_uni_entry(unsigned char **inptr, unsigned char **endptr, struct unicode_list
  */
 extern char *progname;
 
-int readpsffont(FILE *fontf, char **allbufp, size_t *allszp,
-                char **fontbufp, int *fontszp,
+int readpsffont(FILE *fontf, unsigned char **allbufp, size_t *allszp,
+                unsigned char **fontbufp, int *fontszp,
                 int *fontwidthp, int *fontlenp, int fontpos0,
                 struct unicode_list **uclistheadsp)
 {
-	char *inputbuf     = NULL;
+	unsigned char *inputbuf = NULL;
 	size_t inputbuflth = 0;
 	size_t inputlth, fontlen, fontwidth, charsize, hastable, ftoffset, utf8;
 	size_t i, k, n;
@@ -312,8 +312,8 @@ int readpsffont(FILE *fontf, char **allbufp, size_t *allszp,
 	if (hastable) {
 		unsigned char *inptr, *endptr;
 
-		inptr  = (unsigned char * /* FIXME */)inputbuf + ftoffset + fontlen * charsize;
-		endptr = (unsigned char * /* FIXME */)inputbuf + inputlth;
+		inptr  = inputbuf + ftoffset + fontlen * charsize;
+		endptr = inputbuf + inputlth;
 
 		for (i = 0; i < fontlen; i++) {
 			k = fontpos0 + i;

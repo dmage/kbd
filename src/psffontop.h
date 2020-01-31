@@ -20,8 +20,8 @@ struct unicode_list {
 	struct unicode_seq *seq;
 };
 
-extern int readpsffont(FILE *fontf, char **allbufp, size_t *allszp,
-                       char **fontbufp, int *fontszp,
+extern int readpsffont(FILE *fontf, unsigned char **allbufp, size_t *allszp,
+                       unsigned char **fontbufp, int *fontszp,
                        int *fontwidthp, int *fontlenp, int fontpos0,
                        struct unicode_list **uclistheadsp);
 

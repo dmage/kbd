@@ -250,7 +250,7 @@ int main(int argc, char *argv[])
 static int erase_mode = 1;
 
 static void
-do_loadfont(int fd, char *inbuf, int width, int height, int hwunit,
+do_loadfont(int fd, unsigned char *inbuf, int width, int height, int hwunit,
             int fontsize, char *filename)
 {
 	unsigned char *buf;
@@ -434,7 +434,8 @@ static void
 loadnewfonts(int fd, char **ifiles, int ifilct,
              int iunit, int hwunit, int no_m, int no_u)
 {
-	char *ifil, *inbuf, *fontbuf, *bigfontbuf;
+	char *ifil;
+	unsigned char *inbuf, *fontbuf, *bigfontbuf;
 	size_t inputlth;
 	int fontbuflth, fontsize, height, width, bytewidth;
 	int bigfontbuflth, bigfontsize, bigheight, bigwidth;
@@ -527,7 +528,7 @@ loadnewfont(int fd, char *ifil, int iunit, int hwunit, int no_m, int no_u)
 
 	char defname[20];
 	int height, width, bytewidth, def = 0;
-	char *inbuf, *fontbuf;
+	unsigned char *inbuf, *fontbuf;
 	size_t inputlth;
 	int fontbuflth, fontsize, offset;
 	struct unicode_list *uclistheads;
@@ -597,16 +598,17 @@ loadnewfont(int fd, char *ifil, int iunit, int hwunit, int no_m, int no_u)
 	{
 		char *combineheader = "# combine partial fonts\n";
 		size_t chlth        = strlen(combineheader);
-		char *p, *q;
-		if (inputlth >= chlth && !strncmp(inbuf, combineheader, chlth)) {
+		char *p, *q, *end;
+		if (inputlth >= chlth && !strncmp((char *)inbuf, combineheader, chlth)) {
 			char *ifiles[MAXIFILES];
 			int ifilct = 0;
-			q          = inbuf + chlth;
-			while (q < inbuf + inputlth) {
+			q          = (char *)inbuf + chlth;
+            end        = (char *)inbuf + inputlth;
+			while (q < end) {
 				p = q;
-				while (q < inbuf + inputlth && *q != '\n')
+				while (q < end && *q != '\n')
 					q++;
-				if (q == inbuf + inputlth) {
+				if (q == end) {
 					fprintf(stderr,
 					        _("No final newline in combine file\n"));
 					exit(EX_DATAERR);

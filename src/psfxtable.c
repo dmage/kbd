@@ -240,7 +240,7 @@ int main(int argc, char **argv)
 	int psftype, charsize, fontlen, hastable, notable;
 	int i;
 	int width = 8, bytewidth, height;
-	char *inbuf, *fontbuf;
+	unsigned char *inbuf, *fontbuf;
 	size_t inbuflth;
 	int fontbuflth;
 
@@ -373,9 +373,9 @@ int main(int argc, char **argv)
 
 	hastable = (uclistheads != NULL);
 
-	if (PSF1_MAGIC_OK((unsigned char *)inbuf)) {
+	if (PSF1_MAGIC_OK(inbuf)) {
 		psftype = 1;
-	} else if (PSF2_MAGIC_OK((unsigned char *)inbuf)) {
+	} else if (PSF2_MAGIC_OK(inbuf)) {
 		psftype = 2;
 	} else {
 		char *u = _("%s: psf file with unknown magic\n");
@@ -421,7 +421,7 @@ int main(int argc, char **argv)
 	}
 
 	if (ofil) {
-		writepsffont(ofil, fontbuf, width, height, fontlen, psftype,
+		writepsffont(ofil, (char * /* FIXME */)fontbuf, width, height, fontlen, psftype,
 		             notable ? NULL : uclistheads);
 		fclose(ofil);
 	}
