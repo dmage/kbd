@@ -90,7 +90,7 @@ static unsigned int
 assemble_utf8(char **inptr, int cnt)
 {
 	int err;
-	unsigned long uc;
+	unsigned int uc;
 	char *u;
 
 	uc = from_utf8(inptr, cnt, &err);

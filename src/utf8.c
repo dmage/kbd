@@ -3,7 +3,7 @@
 #include "utf8.h"
 
 /*
- * Convert utf8 to long.
+ * Convert utf8 to int.
  * On success: update *inptr to be the first nonread character,
  *   set *err to 0, and return the obtained value.
  * On failure: leave *inptr unchanged, set *err to some nonzero error value:
@@ -12,7 +12,7 @@
  *
  * cnt is either 0 or gives the number of available bytes
  */
-unsigned long
+unsigned int
 from_utf8(char **inptr, int cnt, int *err)
 {
 	unsigned char *in;
