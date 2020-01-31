@@ -241,7 +241,8 @@ int main(int argc, char **argv)
 	int i;
 	int width = 8, bytewidth, height;
 	char *inbuf, *fontbuf;
-	int inbuflth, fontbuflth;
+	size_t inbuflth;
+	int fontbuflth;
 
 	set_progname(argv[0]);
 	setuplocale();

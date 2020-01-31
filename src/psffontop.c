@@ -188,7 +188,7 @@ get_uni_entry(char **inptr, char **endptr, struct unicode_list *up, int utf8)
  */
 extern char *progname;
 
-int readpsffont(FILE *fontf, char **allbufp, int *allszp,
+int readpsffont(FILE *fontf, char **allbufp, size_t *allszp,
                 char **fontbufp, int *fontszp,
                 int *fontwidthp, int *fontlenp, int fontpos0,
                 struct unicode_list **uclistheadsp)

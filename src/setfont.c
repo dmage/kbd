@@ -435,7 +435,8 @@ loadnewfonts(int fd, char **ifiles, int ifilct,
              int iunit, int hwunit, int no_m, int no_u)
 {
 	char *ifil, *inbuf, *fontbuf, *bigfontbuf;
-	int inputlth, fontbuflth, fontsize, height, width, bytewidth;
+	size_t inputlth;
+	int fontbuflth, fontsize, height, width, bytewidth;
 	int bigfontbuflth, bigfontsize, bigheight, bigwidth;
 	struct unicode_list *uclistheads;
 	int i;
@@ -467,8 +468,9 @@ loadnewfonts(int fd, char **ifiles, int ifilct,
 		}
 
 		inbuf = fontbuf = NULL;
-		inputlth = fontbuflth = 0;
-		fontsize              = 0;
+		inputlth        = 0;
+		fontbuflth      = 0;
+		fontsize        = 0;
 
 		if (readpsffont(kbdfile_get_file(fp), &inbuf, &inputlth, &fontbuf, &fontbuflth,
 		                &width, &fontsize, bigfontsize,
@@ -526,7 +528,8 @@ loadnewfont(int fd, char *ifil, int iunit, int hwunit, int no_m, int no_u)
 	char defname[20];
 	int height, width, bytewidth, def = 0;
 	char *inbuf, *fontbuf;
-	int inputlth, fontbuflth, fontsize, offset;
+	size_t inputlth;
+	int fontbuflth, fontsize, offset;
 	struct unicode_list *uclistheads;
 
 	if ((fp = kbdfile_new(NULL)) == NULL)
@@ -566,9 +569,10 @@ loadnewfont(int fd, char *ifil, int iunit, int hwunit, int no_m, int no_u)
 		printf(_("Reading font file %s\n"), ifil);
 
 	inbuf = fontbuf = NULL;
-	inputlth = fontbuflth = fontsize = 0;
-	width                            = 8;
-	uclistheads                      = NULL;
+	inputlth        = 0;
+	fontbuflth = fontsize = 0;
+	width                 = 8;
+	uclistheads           = NULL;
 	if (readpsffont(kbdfile_get_file(fp), &inbuf, &inputlth, &fontbuf, &fontbuflth,
 	                &width, &fontsize, 0,
 	                no_u ? NULL : &uclistheads) == 0) {
@@ -592,7 +596,7 @@ loadnewfont(int fd, char *ifil, int iunit, int hwunit, int no_m, int no_u)
 	/* instructions to combine fonts? */
 	{
 		char *combineheader = "# combine partial fonts\n";
-		int chlth           = strlen(combineheader);
+		size_t chlth        = strlen(combineheader);
 		char *p, *q;
 		if (inputlth >= chlth && !strncmp(inbuf, combineheader, chlth)) {
 			char *ifiles[MAXIFILES];
@@ -656,7 +660,8 @@ loadnewfont(int fd, char *ifil, int iunit, int hwunit, int no_m, int no_u)
 		}
 		fontsize = 256;
 		width    = 8;
-		height   = inputlth / 256;
+		/* FIXME: height should be less or equal to 32 */
+		height   = (int /* FIXME */)inputlth / 256;
 	}
 	do_loadfont(fd, inbuf + offset, width, height, hwunit, fontsize,
 	            kbdfile_get_pathname(fp));
