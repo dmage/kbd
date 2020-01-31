@@ -70,7 +70,7 @@ store_uint32_le(unsigned char *ip, unsigned int num)
 }
 
 static unsigned int
-assemble_ucs2(unsigned char **inptr, int cnt)
+assemble_ucs2(unsigned char **inptr, ptrdiff_t cnt)
 {
 	unsigned int u1, u2;
 
