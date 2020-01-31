@@ -70,7 +70,7 @@ store_uint32_le(unsigned char *ip, unsigned int num)
 }
 
 static unsigned int
-assemble_ucs2(char **inptr, int cnt)
+assemble_ucs2(unsigned char **inptr, int cnt)
 {
 	unsigned int u1, u2;
 
@@ -87,7 +87,7 @@ assemble_ucs2(char **inptr, int cnt)
 
 /* called with cnt > 0 and **inptr not 0xff or 0xfe */
 static unsigned int
-assemble_utf8(char **inptr, int cnt)
+assemble_utf8(unsigned char **inptr, int cnt)
 {
 	int err;
 	unsigned int uc;
@@ -123,7 +123,7 @@ clear_uni_entry(struct unicode_list *up)
  * Read description of a single font position.
  */
 static void
-get_uni_entry(char **inptr, char **endptr, struct unicode_list *up, int utf8)
+get_uni_entry(unsigned char **inptr, unsigned char **endptr, struct unicode_list *up, int utf8)
 {
 	unsigned char uc;
 	unicode unichar;
@@ -310,10 +310,10 @@ int readpsffont(FILE *fontf, char **allbufp, size_t *allszp,
 	                         (fontpos0 + fontlen) * sizeof(struct unicode_list));
 
 	if (hastable) {
-		char *inptr, *endptr;
+		unsigned char *inptr, *endptr;
 
-		inptr  = inputbuf + ftoffset + fontlen * charsize;
-		endptr = inputbuf + inputlth;
+		inptr  = (unsigned char * /* FIXME */)inputbuf + ftoffset + fontlen * charsize;
+		endptr = (unsigned char * /* FIXME */)inputbuf + inputlth;
 
 		for (i = 0; i < fontlen; i++) {
 			k = fontpos0 + i;

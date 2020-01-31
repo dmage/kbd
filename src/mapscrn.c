@@ -239,7 +239,7 @@ int ctoi(char *s)
 		int err;
 		char *s1 = s + 1;
 
-		i = from_utf8(&s1, 0, &err);
+		i = from_utf8((unsigned char **)&s1, 0, &err);
 		if (err || s1[0] != '\'' || s1[1] != 0)
 			return -1;
 	}
