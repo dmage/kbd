@@ -237,12 +237,14 @@ int main(int argc, char **argv)
 {
 	const char *ifname, *ofname, *itname, *otname;
 	FILE *ifil, *ofil, *itab, *otab;
-	int psftype, charsize, fontlen, hastable, notable;
+	int psftype, hastable, notable;
+	unsigned int charsize, fontlen;
 	int i;
-	int width = 8, bytewidth, height;
+	unsigned k;
+	unsigned int width = 8, bytewidth, height;
 	unsigned char *inbuf, *fontbuf;
 	size_t inbuflth;
-	int fontbuflth;
+	unsigned int fontbuflth;
 
 	set_progname(argv[0]);
 	setuplocale();
@@ -384,7 +386,7 @@ int main(int argc, char **argv)
 	}
 
 	if (itab) {
-		read_itable(itab, fontlen, &uclistheads);
+		read_itable(itab, (int /* FIXME */)fontlen, &uclistheads);
 		fclose(itab);
 	}
 
@@ -401,10 +403,10 @@ int main(int argc, char **argv)
 		fprintf(otab,
 		        "#\n# Character table extracted from font %s\n#\n",
 		        ifname);
-		for (i = 0; i < fontlen; i++) {
-			fprintf(otab, "0x%03x\t", i);
+		for (k = 0; k < fontlen; k++) {
+			fprintf(otab, "0x%03x\t", k);
 			sep = "";
-			ul  = uclistheads[i].next;
+			ul  = uclistheads[k].next;
 			while (ul) {
 				us = ul->seq;
 				while (us) {
@@ -421,7 +423,7 @@ int main(int argc, char **argv)
 	}
 
 	if (ofil) {
-		writepsffont(ofil, fontbuf, width, height, fontlen, psftype,
+		writepsffont(ofil, fontbuf, (int /* FIXME */)width, (int /* FIXME */)height, (int /* FIXME */)fontlen, psftype,
 		             notable ? NULL : uclistheads);
 		fclose(ofil);
 	}

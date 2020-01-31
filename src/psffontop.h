@@ -21,8 +21,8 @@ struct unicode_list {
 };
 
 extern int readpsffont(FILE *fontf, unsigned char **allbufp, size_t *allszp,
-                       unsigned char **fontbufp, int *fontszp,
-                       int *fontwidthp, int *fontlenp, int fontpos0,
+                       unsigned char **fontbufp, unsigned int *fontszp,
+                       unsigned int *fontwidthp, unsigned int *fontlenp, unsigned int fontpos0,
                        struct unicode_list **uclistheadsp);
 
 extern int writepsffont(FILE *ofil, unsigned char *fontbuf,

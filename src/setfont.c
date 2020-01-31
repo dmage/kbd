@@ -35,7 +35,7 @@
 #include "kdfontop.h"
 #include "kdmapop.h"
 
-static int position_codepage(int iunit);
+static unsigned int position_codepage(int iunit);
 static void saveoldfont(int fd, char *ofil);
 static void saveoldfontplusunicodemap(int fd, char *Ofil);
 static void loadnewfont(int fd, char *ifil,
@@ -250,12 +250,12 @@ int main(int argc, char *argv[])
 static int erase_mode = 1;
 
 static void
-do_loadfont(int fd, unsigned char *inbuf, int width, int height, int hwunit,
-            int fontsize, char *filename)
+do_loadfont(int fd, unsigned char *inbuf, unsigned int width, unsigned int height, unsigned int hwunit,
+            unsigned int fontsize, char *filename)
 {
 	unsigned char *buf;
-	int i, buflen;
-	int kcharsize;
+	unsigned int i, buflen;
+	unsigned int kcharsize;
 	int bad_video_erase_char = 0;
 
 	if (height < 1 || height > 32) {
@@ -277,9 +277,9 @@ do_loadfont(int fd, unsigned char *inbuf, int width, int height, int hwunit,
 	}
 
 	if (double_size) {
-		int bytewidth  = (width + 7) / 8;
-		int kbytewidth = (2 * width + 7) / 8;
-		int charsize   = height * bytewidth;
+		unsigned int bytewidth  = (width + 7) / 8;
+		unsigned int kbytewidth = (2 * width + 7) / 8;
+		unsigned int charsize   = height * bytewidth;
 		kcharsize      = 32 * kbytewidth;
 		buflen         = kcharsize * ((fontsize < 128) ? 128 : fontsize);
 		buf            = xmalloc(buflen);
@@ -287,8 +287,8 @@ do_loadfont(int fd, unsigned char *inbuf, int width, int height, int hwunit,
 
 		const unsigned char *src = (unsigned char *)inbuf;
 		for (i = 0; i < fontsize; i++) {
-			for (int y = 0; y < height; y++) {
-				for (int x = 0; x < kbytewidth; x++) {
+			for (unsigned int y = 0; y < height; y++) {
+				for (unsigned int x = 0; x < kbytewidth; x++) {
 					unsigned char b = src[i * charsize + y * bytewidth + x / 2];
 					if (!(x & 1))
 						b >>= 4;
@@ -307,8 +307,8 @@ do_loadfont(int fd, unsigned char *inbuf, int width, int height, int hwunit,
 		height *= 2;
 		hwunit *= 2;
 	} else {
-		int bytewidth = (width + 7) / 8;
-		int charsize  = height * bytewidth;
+		unsigned int bytewidth = (width + 7) / 8;
+		unsigned int charsize  = height * bytewidth;
 		kcharsize     = 32 * bytewidth;
 		buflen        = kcharsize * ((fontsize < 128) ? 128 : fontsize);
 		buf           = xmalloc(buflen);
@@ -364,7 +364,7 @@ do_loadfont(int fd, unsigned char *inbuf, int width, int height, int hwunit,
 			       fontsize, width, height, hwunit);
 	}
 
-	if (putfont(fd, buf, fontsize, width, hwunit))
+	if (putfont(fd, buf, (int /* FIXME */)fontsize, (int /* FIXME */)width, (int /* FIXME */)hwunit))
 		exit(EX_OSERR);
 }
 
@@ -437,8 +437,8 @@ loadnewfonts(int fd, char **ifiles, int ifilct,
 	char *ifil;
 	unsigned char *inbuf, *fontbuf, *bigfontbuf;
 	size_t inputlth;
-	int fontbuflth, fontsize, height, width, bytewidth;
-	int bigfontbuflth, bigfontsize, bigheight, bigwidth;
+	unsigned int fontbuflth, fontsize, height, width, bytewidth;
+	unsigned int bigfontbuflth, bigfontsize, bigheight, bigwidth;
 	struct unicode_list *uclistheads;
 	int i;
 
@@ -513,12 +513,12 @@ loadnewfonts(int fd, char **ifiles, int ifilct,
 		memcpy(bigfontbuf + bigfontbuflth - fontbuflth,
 		       fontbuf, fontbuflth);
 	}
-	do_loadfont(fd, bigfontbuf, bigwidth, bigheight, hwunit,
+	do_loadfont(fd, bigfontbuf, bigwidth, bigheight, (unsigned int /* FIXME */)hwunit,
 	            bigfontsize, NULL);
 	free(bigfontbuf);
 
 	if (uclistheads && !no_u)
-		do_loadtable(fd, uclistheads, bigfontsize);
+		do_loadtable(fd, uclistheads, (int /* FIXME */)bigfontsize);
 }
 
 static void
@@ -527,10 +527,11 @@ loadnewfont(int fd, char *ifil, int iunit, int hwunit, int no_m, int no_u)
 	struct kbdfile *fp;
 
 	char defname[20];
-	int height, width, bytewidth, def = 0;
+	unsigned int height, width, bytewidth;
+	int def = 0;
 	unsigned char *inbuf, *fontbuf;
 	size_t inputlth;
-	int fontbuflth, fontsize, offset;
+	unsigned int fontbuflth, fontsize, offset;
 	struct unicode_list *uclistheads;
 
 	if ((fp = kbdfile_new(NULL)) == NULL)
@@ -571,9 +572,10 @@ loadnewfont(int fd, char *ifil, int iunit, int hwunit, int no_m, int no_u)
 
 	inbuf = fontbuf = NULL;
 	inputlth        = 0;
-	fontbuflth = fontsize = 0;
-	width                 = 8;
-	uclistheads           = NULL;
+	fontbuflth      = 0;
+	fontsize        = 0;
+	width           = 8;
+	uclistheads     = NULL;
 	if (readpsffont(kbdfile_get_file(fp), &inbuf, &inputlth, &fontbuf, &fontbuflth,
 	                &width, &fontsize, 0,
 	                no_u ? NULL : &uclistheads) == 0) {
@@ -582,11 +584,11 @@ loadnewfont(int fd, char *ifil, int iunit, int hwunit, int no_m, int no_u)
 		bytewidth = (width + 7) / 8;
 		height    = fontbuflth / (bytewidth * fontsize);
 
-		do_loadfont(fd, fontbuf, width, height, hwunit,
+		do_loadfont(fd, fontbuf, width, height, (unsigned int /* FIXME */)hwunit,
 		            fontsize, kbdfile_get_pathname(fp));
 
 		if (uclistheads && !no_u)
-			do_loadtable(fd, uclistheads, fontsize);
+			do_loadtable(fd, uclistheads, (int /* FIXME */)fontsize);
 #if 1
 		if (!uclistheads && !no_u && def)
 			loadunicodemap(fd, "def.uni");
@@ -630,7 +632,7 @@ loadnewfont(int fd, char *ifil, int iunit, int hwunit, int no_m, int no_u)
 	/* file with three code pages? */
 	if (inputlth == 9780) {
 		offset   = position_codepage(iunit);
-		height   = iunit;
+		height   = (unsigned int /* FIXME */)iunit;
 		fontsize = 256;
 		width    = 8;
 	} else if (inputlth == 32768) {
@@ -650,7 +652,7 @@ loadnewfont(int fd, char *ifil, int iunit, int hwunit, int no_m, int no_u)
 		if (!hwunit)
 			hwunit = 16;
 	} else {
-		int rem = (inputlth % 256);
+		unsigned int rem = ((unsigned int /* FIXME */)inputlth % 256);
 		if (rem == 0 || rem == 40) {
 			/* 0: bare code page bitmap */
 			/* 40: preceded by .cp header */
@@ -663,19 +665,19 @@ loadnewfont(int fd, char *ifil, int iunit, int hwunit, int no_m, int no_u)
 		fontsize = 256;
 		width    = 8;
 		/* FIXME: height should be less or equal to 32 */
-		height   = (int /* FIXME */)inputlth / 256;
+		height   = (unsigned int /* FIXME */)inputlth / 256;
 	}
-	do_loadfont(fd, inbuf + offset, width, height, hwunit, fontsize,
+	do_loadfont(fd, inbuf + offset, width, height, (unsigned int /* FIXME */)hwunit, fontsize,
 	            kbdfile_get_pathname(fp));
 exit:
 	kbdfile_free(fp);
 	return;
 }
 
-static int
+static unsigned int
 position_codepage(int iunit)
 {
-	int offset;
+	unsigned int offset;
 
 	/* code page: first 40 bytes, then 8x16 font,
 	   then 6 bytes, then 8x14 font,

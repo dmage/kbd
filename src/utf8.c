@@ -13,11 +13,12 @@
  * cnt is either 0 or gives the number of available bytes
  */
 unsigned int
-from_utf8(unsigned char **inptr, int cnt, int *err)
+from_utf8(unsigned char **inptr, ptrdiff_t cnt, int *err)
 {
 	unsigned char *in;
 	unsigned int uc, uc2;
-	int need, bit, bad = 0;
+	ptrdiff_t need;
+	int bit, bad = 0;
 
 	in   = *inptr;
 	uc   = *in++;

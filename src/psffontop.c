@@ -87,7 +87,7 @@ assemble_ucs2(unsigned char **inptr, int cnt)
 
 /* called with cnt > 0 and **inptr not 0xff or 0xfe */
 static unsigned int
-assemble_utf8(unsigned char **inptr, int cnt)
+assemble_utf8(unsigned char **inptr, ptrdiff_t cnt)
 {
 	int err;
 	unsigned int uc;
@@ -189,13 +189,15 @@ get_uni_entry(unsigned char **inptr, unsigned char **endptr, struct unicode_list
 extern char *progname;
 
 int readpsffont(FILE *fontf, unsigned char **allbufp, size_t *allszp,
-                unsigned char **fontbufp, int *fontszp,
-                int *fontwidthp, int *fontlenp, int fontpos0,
+                unsigned char **fontbufp, unsigned int *fontszp,
+                unsigned int *fontwidthp, unsigned int *fontlenp, unsigned int fontpos0,
                 struct unicode_list **uclistheadsp)
 {
 	unsigned char *inputbuf = NULL;
 	size_t inputbuflth = 0;
-	size_t inputlth, fontlen, fontwidth, charsize, hastable, ftoffset, utf8;
+	size_t inputlth, hastable;
+	int utf8;
+	unsigned int fontlen, fontwidth, charsize, ftoffset;
 	size_t i, k, n;
 
 	/*
@@ -257,7 +259,7 @@ int readpsffont(FILE *fontf, unsigned char **allbufp, size_t *allszp,
 	} else if (inputlth >= sizeof(struct psf2_header) &&
 	           PSF2_MAGIC_OK((unsigned char *)inputbuf)) {
 		struct psf2_header psfhdr;
-		int flags;
+		unsigned int flags;
 
 		memcpy(&psfhdr, inputbuf, sizeof(struct psf2_header));
 
