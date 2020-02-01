@@ -18,7 +18,7 @@ extern int putfont(int fd, unsigned char *buf, int count, int width, int height)
  * Find the maximum height of nonblank pixels
  * (in the ((WIDTH+7)/8)*32*COUNT bytes of BUF).
  */
-extern int font_charheight(unsigned char *buf, int count, int width);
+extern unsigned int font_charheight(unsigned char *buf, unsigned int count, unsigned int width);
 
 /*
  * Find the size of the kernel font.

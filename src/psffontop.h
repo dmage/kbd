@@ -32,7 +32,7 @@ extern int writepsffont(FILE *ofil, unsigned char *fontbuf,
 #define WPSFH_HASTAB 1
 #define WPSFH_HASSEQ 2
 extern void writepsffontheader(FILE *ofil,
-                               int width, int height, int fontlen,
+                               unsigned int width, unsigned int height, unsigned int fontlen,
                                int *psftype, int flags);
 
 extern void appendunicode(FILE *fp, unsigned int uc, int utf8);

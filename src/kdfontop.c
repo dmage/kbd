@@ -29,10 +29,10 @@ int restorefont(int fd)
 	return 0;
 }
 
-int font_charheight(unsigned char *buf, int count, int width)
+unsigned int font_charheight(unsigned char *buf, unsigned int count, unsigned int width)
 {
-	int h, i, x;
-	int bytewidth = (width + 7) / 8;
+	unsigned int h, i, x;
+	unsigned int bytewidth = (width + 7) / 8;
 
 	for (h = 32; h > 0; h--)
 		for (i = 0; i < count; i++)
@@ -132,7 +132,7 @@ int putfont(int fd, unsigned char *buf, int count, int width, int height)
 	if (!width)
 		width = 8;
 	if (!height)
-		height = font_charheight(buf, count, width);
+		height = (int /* FIXME */)font_charheight(buf, (unsigned int /* FIXME */)count, (unsigned int /* FIXME */)width);
 
 	/* First attempt: KDFONTOP */
 	cfo.op        = KD_FONT_OP_SET;

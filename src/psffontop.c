@@ -410,7 +410,7 @@ void appendseparator(FILE *fp, int seq, int utf8)
 	}
 }
 
-void writepsffontheader(FILE *ofil, int width, int height, int fontlen,
+void writepsffontheader(FILE *ofil, unsigned int width, unsigned int height, unsigned int fontlen,
                         int *psftype, int flags)
 {
 	unsigned char bytewidth, charsize;
@@ -451,10 +451,10 @@ void writepsffontheader(FILE *ofil, int width, int height, int fontlen,
 		store_uint32_le((unsigned char *)&h.version, 0);
 		store_uint32_le((unsigned char *)&h.headersize, sizeof(h));
 		store_uint32_le((unsigned char *)&h.flags, flags2);
-		store_uint32_le((unsigned char *)&h.length, (unsigned int /* FIXME */)fontlen);
+		store_uint32_le((unsigned char *)&h.length, fontlen);
 		store_uint32_le((unsigned char *)&h.charsize, charsize);
-		store_uint32_le((unsigned char *)&h.width, (unsigned int /* FIXME */)width);
-		store_uint32_le((unsigned char *)&h.height, (unsigned int /* FIXME */)height);
+		store_uint32_le((unsigned char *)&h.width, width);
+		store_uint32_le((unsigned char *)&h.height, height);
 		ret = fwrite(&h, sizeof(h), 1, ofil);
 	} else {
 		struct psf1_header h;
@@ -494,7 +494,7 @@ int writepsffont(FILE *ofil, unsigned char *fontbuf, int width, int height, int 
 			flags |= WPSFH_HASSEQ;
 	}
 
-	writepsffontheader(ofil, width, height, fontlen, &psftype, flags);
+	writepsffontheader(ofil, (unsigned int /* FIXME */)width, (unsigned int /* FIXME */)height, (unsigned int /* FIXME */)fontlen, &psftype, flags);
 	utf8 = (psftype == 2);
 
 	if ((fwrite(fontbuf, (size_t /* FIXME */)charsize, (size_t /* FIXME */)fontlen, ofil)) != (size_t /* FIXME */)fontlen) {

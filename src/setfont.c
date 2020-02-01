@@ -719,10 +719,10 @@ do_saveoldfont(int fd, char *ofil, FILE *fpo, int unimap_follows,
 #define MAXFONTSIZE 65536
 	unsigned char buf[MAXFONTSIZE];
 
-	int i, ct, width, height, bytewidth, charsize, kcharsize;
+	unsigned int i, ct, width, height, bytewidth, charsize, kcharsize;
 
 	ct = sizeof(buf) / (32 * 32 / 8); /* max size 32x32, 8 bits/byte */
-	if (getfont(fd, buf, &ct, &width, &height))
+	if (getfont(fd, buf, (int * /* FIXME */)&ct, (int * /* FIXME */)&width, (int * /* FIXME */)&height))
 		exit(EX_OSERR);
 
 	/* save as efficiently as possible */
@@ -763,7 +763,7 @@ do_saveoldfont(int fd, char *ofil, FILE *fpo, int unimap_follows,
 	}
 
 	if (count)
-		*count = ct;
+		*count = (int /* FIXME */)ct;
 }
 
 static void
