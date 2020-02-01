@@ -361,7 +361,7 @@ void appendunicode(FILE *fp, unsigned int uc, int utf8)
 	int n = 6;
 	unsigned char out[6];
 
-	if (uc & ~0x7fffffff) {
+	if (uc & ~0x7fffffffu) {
 		fprintf(stderr, _("appendunicode: illegal unicode %u\n"), uc);
 		exit(1);
 	}
@@ -369,11 +369,11 @@ void appendunicode(FILE *fp, unsigned int uc, int utf8)
 		out[--n] = ((uc >> 8) & 0xff);
 		out[--n] = (uc & 0xff);
 	} else if (uc < 0x80) {
-		out[--n] = uc;
+		out[--n] = (unsigned char)uc;
 	} else {
-		int mask = 0x3f;
+		unsigned int mask = 0x3f;
 		while (uc & ~mask) {
-			out[--n] = 0x80 + (uc & 0x3f);
+			out[--n] = (unsigned char)(0x80 + (uc & 0x3f));
 			uc >>= 6;
 			mask >>= 1;
 		}
@@ -395,7 +395,7 @@ void appendunicode(FILE *fp, unsigned int uc, int utf8)
 
 void appendseparator(FILE *fp, int seq, int utf8)
 {
-	int n;
+	size_t n;
 
 	if (utf8) {
 		unsigned char u = (seq ? PSF2_STARTSEQ : PSF2_SEPARATOR);
