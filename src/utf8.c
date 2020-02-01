@@ -16,9 +16,9 @@ unsigned int
 from_utf8(unsigned char **inptr, ptrdiff_t cnt, int *err)
 {
 	unsigned char *in;
-	unsigned int uc, uc2;
+	unsigned int uc, uc2, bit;
 	ptrdiff_t need;
-	int bit, bad = 0;
+	int bad = 0;
 
 	in   = *inptr;
 	uc   = *in++;
