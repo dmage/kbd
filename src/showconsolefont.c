@@ -114,11 +114,13 @@ usage(void)
 
 int main(int argc, char **argv)
 {
-	int c, n, cols, rows, nr, i, j, k;
+	int c, r;
+	unsigned int n, i, j, k, cols, rows, nr;
 	int mode;
 	const char *space, *sep;
 	char *console = NULL;
-	int list[64], lth, info = 0, verbose = 0;
+	unsigned int list[64];
+	int lth, info = 0, verbose = 0;
 
 	set_progname(argv[0]);
 	setuplocale();
@@ -160,8 +162,8 @@ int main(int argc, char **argv)
 
 	if (info) {
 		nr = rows = cols = 0;
-		n                = getfont(fd, NULL, &nr, &rows, &cols);
-		if (n != 0)
+		r                = getfont(fd, NULL, &nr, &rows, &cols);
+		if (r != 0)
 			leave(EXIT_FAILURE);
 
 		if (verbose) {
@@ -190,11 +192,11 @@ int main(int argc, char **argv)
 			for (k = i; k < i + nr; k++)
 				for (j              = 0; j < cols; j++)
 					list[lth++] = k + j * rows;
-			setnewunicodemap(list, lth);
+			setnewunicodemap((int * /* FIXME */)list, lth);
 		}
 		printf("%1$s%1$s%1$s%1$s", space);
 		for (j = 0; j < cols && i + j * rows < n; j++) {
-			putchar(BASE + (i % nr) * cols + j);
+			putchar((unsigned char)(BASE + (i % nr) * cols + j));
 			printf(sep, space);
 			if (j % 8 == 7)
 				printf(sep, space);

@@ -48,7 +48,7 @@ nonzero:
  * May be called with width==NULL and height==NULL.
  * Must not exit - we may have cleanup to do.
  */
-int getfont(int fd, unsigned char *buf, int *count, int *width, int *height)
+int getfont(int fd, unsigned char *buf, unsigned int *count, unsigned int *width, unsigned int *height)
 {
 	struct consolefontdesc cfd;
 	struct console_font_op cfo;
@@ -113,9 +113,9 @@ int getfont(int fd, unsigned char *buf, int *count, int *width, int *height)
 	return 0;
 }
 
-int getfontsize(int fd)
+unsigned int getfontsize(int fd)
 {
-	int count;
+	unsigned int count;
 	int i;
 
 	count = 0;

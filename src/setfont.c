@@ -722,7 +722,7 @@ do_saveoldfont(int fd, char *ofil, FILE *fpo, int unimap_follows,
 	unsigned int i, ct, width, height, bytewidth, charsize, kcharsize;
 
 	ct = sizeof(buf) / (32 * 32 / 8); /* max size 32x32, 8 bits/byte */
-	if (getfont(fd, buf, (int * /* FIXME */)&ct, (int * /* FIXME */)&width, (int * /* FIXME */)&height))
+	if (getfont(fd, buf, &ct, &width, &height))
 		exit(EX_OSERR);
 
 	/* save as efficiently as possible */
