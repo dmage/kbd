@@ -214,10 +214,20 @@ codetoksym(struct lk_ctx *ctx, int code)
 		if (code < 0x80)
 			return get_sym(ctx, KT_LATIN, code);
 
-		for (i = 0; i < charsets_size; i++) {
-			p = (sym *)charsets[i].charnames;
+		if (ctx->flags & LK_FLAG_PREFER_UNICODE) {
+			for (i = 0; i < charsets_size; i++) {
+				p = (sym *)charsets[i].charnames;
+				if (p) {
+					for (j = charsets[i].start; j < 256; j++, p++) {
+						if (p->uni == code && p->name[0])
+							return p->name;
+					}
+				}
+			}
+		} else {
+			p = (sym *)charsets[ctx->charset].charnames;
 			if (p) {
-				for (j = charsets[i].start; j < 256; j++, p++) {
+				for (j = charsets[ctx->charset].start; j < 256; j++, p++) {
 					if (p->uni == code && p->name[0])
 						return p->name;
 				}
