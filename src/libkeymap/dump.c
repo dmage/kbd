@@ -91,6 +91,35 @@ fail:
 	return -1;
 }
 
+int lk_dump_tkeymap(struct lk_ctx *ctx, FILE *fd)
+{
+	if (lk_add_constants(ctx) < 0)
+		return -1;
+
+	int empty = 1;
+	for (int i = 0; i < ctx->keymap->total; i++) {
+		if (lk_map_exists(ctx, i)) {
+			empty = 0;
+			break;
+		}
+	}
+	if (empty)
+		return 0;
+
+	ctx->keywords &= ~LK_KEYWORD_ALTISMETA;
+
+	lk_dump_keymaps(ctx, fd);
+	const char *charset = lk_get_charset(ctx);
+	if (charset)
+		fprintf(fd, "charset \"%s\"\n", charset);
+	fprintf(fd, "\n");
+
+	lk_dump_keys(ctx, fd, LK_SHAPE_SEPARATE_LINES, 0);
+	lk_dump_funcs(ctx, fd);
+
+	return 0;
+}
+
 static char *
 mk_mapname(char modifier)
 {

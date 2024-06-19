@@ -50,6 +50,15 @@ struct kmapinfo {
 int lk_dump_bkeymap(struct lk_ctx *ctx, FILE *fd) __attribute__((nonnull(1)));
 
 /**
+ * Outputs a keymap in text format.
+ * @param ctx is a keymap library context.
+ * @param fd is a FILE pointer for output.
+ *
+ * @return 0 on success, -1 on error.
+ */
+int lk_dump_tkeymap(struct lk_ctx *ctx, FILE *fd) __attribute__((nonnull(1)));
+
+/**
  * Outputs a keymap in C format.
  * @param ctx is a keymap library context.
  * @param fd is a FILE pointer for output.
