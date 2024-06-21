@@ -5,6 +5,10 @@ PREV_LANG="$LANG"
 export LANG=en_US.UTF-8
 kbd_mode -u -f
 "loadkeys" -c -s "$abs_srcdir/data/keymaps/VoidSymbol.map"
+E2E_CHECK(["$abs_top_builddir/src/loadkeys" -v mac-us], [loadkeys us])
+E2E_CHECK(["$abs_top_builddir/src/dumpkeys" -k])
+E2E_COMPARE_STDOUT([cat $abs_srcdir/data/e2e/dumpkeys-test01.stdout])
+"loadkeys" -c -s "$abs_srcdir/data/keymaps/VoidSymbol.map"
 E2E_CHECK(["$abs_top_builddir/src/loadkeys" -v us], [loadkeys us])
 E2E_CHECK(["$abs_top_builddir/src/dumpkeys" -k])
 cp -f -- stdout dumpkeys.map
